@@ -21,3 +21,7 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Digital Ocean keys:
+match_point_droplet_key
+match_point_droplet_key.pub
