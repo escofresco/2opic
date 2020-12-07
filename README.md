@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Getting Started with Match Point
+
+( ͡ᵔ ͜ʖ ͡ᵔ ) This is a react app that brings games and people together ｡゜(｀Д´)゜｡
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
