@@ -28,6 +28,6 @@ psycopg2-binary
 python-dateutil
 python-frontmatter
 pytz
-sqlalchemy<1.3  # because flask-admin (as of Jan 2020)
+sqlalchemy<1.4  # because flask-admin (as of Jan 2020)
 tzlocal
 uwsgi
