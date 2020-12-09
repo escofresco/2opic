@@ -1,3 +1,8 @@
+'''
+This module is the Flask endpoint for matchpoint's API backend. 
+
+Use the 'api' namespace for all routes within this app.
+'''
 import time
 from flask import Flask
 
