@@ -1,70 +1,136 @@
-# Getting Started with Create React App
+# Flask React SPA
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Status
+[![Build Status](https://travis-ci.org/briancappello/flask-react-spa.svg?branch=master)](https://travis-ci.org/briancappello/flask-react-spa)
 
-## Available Scripts
+![screenshot](./screenshot.png)
 
-In the project directory, you can run:
+## [React v16](https://facebook.github.io/react/) Frontend
 
-### `yarn start`
+The frontend is heavily inspired by [react boilerplate](https://github.com/react-boilerplate/react-boilerplate), and indeed borrows a good chunk of boilerplate from it.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- [React Router v4](https://reacttraining.com/react-router/web)
+- [Redux](http://redux.js.org/), [Redux-Saga](https://redux-saga.js.org/) and [Redux-Form](https://redux-form.com) for handling state and side effects
+- [Webpack 3](https://webpack.js.org/) and [Babel 6](https://babeljs.io/)
+   - Hot Module Reloading
+   - Tree Shaking
+   - Code Splitting (asynchronous components via [react-loadable](https://github.com/thejameskyle/react-loadable))
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Entry point is at `frontend/app/index.js`.
 
-### `yarn test`
+## [Flask](http://flask.pocoo.org/) Backend
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [SQLAlchemy](http://docs.sqlalchemy.org/en/rel_1_1/) ORM with [Flask-SQLAlchemy](http://flask-sqlalchemy.pocoo.org/2.2/) and migrations provided by [Flask-Alembic](https://flask-alembic.readthedocs.io/en/stable/)
+- RESTful APIs provided by a customized integration between [Flask-RESTful](http://flask-restful.readthedocs.io/en/latest/) and [Flask-Marshmallow](http://flask-marshmallow.readthedocs.io/en/latest/)
+- [Flask-Security](https://flask-security.readthedocs.io/en/latest/) provides authentication, authorization, registration and change/forgot password functionality
+   - User session management via [Flask-Login](https://flask-login.readthedocs.io/en/latest/)
+   - User permissions and roles via [Flask-Principal](https://pythonhosted.org/Flask-Principal/)
+   - Secrets encryption via [passlib](https://passlib.readthedocs.io/en/stable/) and [itsdangerous](https://pythonhosted.org/itsdangerous/)
+   - CSRF protection via [Flask-WTF](https://flask-wtf.readthedocs.io/en/stable/)
+- [Flask-Admin](https://flask-admin.readthedocs.io/en/latest/) integrated for painless model CRUD administration
+- [Flask-Session](http://pythonhosted.org/Flask-Session/) for server-side sessions
+- [Celery](http://www.celeryproject.org/) for asynchronous tasks, such as sending emails via [Flask-Mail](https://pythonhosted.org/Flask-Mail/)
 
-### `yarn build`
+The backend is structured using the [Application Factory Pattern](http://flask.pocoo.org/docs/0.12/patterns/appfactories/), in conjunction with a little bit of declarative configuration in `backend/config.py` (for ordered registration of extensions, and auto-detection of views, models, serializers, model admins and cli commands). The entry point is the `create_app()` method in `backend/app.py` (`wsgi.py` in production).
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Ansible Production Deployment
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- CentOS/RHEL 7.x
+- Python 3.6 (provided by the [IUS Project](https://ius.io/))
+- PostgreSQL 9.6
+- Redis 3.2
+- NGINX + uWSGI + supervisord
+- Lets Encrypt HTTPS
+- Email sending via Postfix with SSL and OpenDKIM
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Local Development QuickStart:
 
-### `yarn eject`
+### Using docker-compose
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Dependencies:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- `docker` and `docker-compose` (at least docker engine v1.13)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+# install
+$ git clone git@github.com:briancappello/flask-react-spa.git
+$ cd flask-react-spa
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# configure (the defaults are fine for development)
+$ edit `backend/config.example.py` and save as `backend/config.py`
+$ edit `frontend/app/config.example.js` and save as `frontend/app/config.js`
 
-## Learn More
+# run it
+$ docker-compose up --build  # grab a coffee; bootstrapping takes a while the first time
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Once it's done building and everything has booted up:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Access the app at: [http://localhost:8888](http://localhost:8888)
+- Access MailHog at: [http://localhost:8025](http://localhost:8025)
+- Access the docs at: [http://localhost:5500](http://localhost:5500)
+- Webpack Bundle Analyzer: [http://localhost:5555](http://localhost:5555)
+- The API (eg for testing with CURL): [http://localhost:5000](http://localhost:5000)
+- And last but not least, the database is exposed on port 5442
 
-### Code Splitting
+### Running locally
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+This assumes you're on a reasonably standard \*nix system. Windows *might* work if you know what you're doing, but you're on your own there.
 
-### Analyzing the Bundle Size
+Dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- Python 3.6+
+- Your virtualenv tool of choice (strongly recommended)
+- PostgreSQL or MariaDB (MySQL)
+- Redis (used for sessions persistence and the Celery tasks queue)
+- node.js & npm (v6 or later recommended, only required for development)
+- MailHog (not required, but it's awesome for testing email related tasks)
 
-### Making a Progressive Web App
+```bash
+# install
+$ git clone git@github.com:briancappello/flask-react-spa.git
+$ cd flask-react-spa
+$ mkvirtualenv -p /path/to/python3 flask_react_spa
+$ pip install -r requirements.txt
+$ pip install -r requirements-dev.txt  # for tests and sphinx docs
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+# configure
+$ edit `backend/config.example.py` and save as `backend/config.py`
+$ edit `frontend/app/config.example.js` and save as `frontend/app/config.js`
 
-### Advanced Configuration
+# set up database
+$ sudo -u postgres -i psql
+postgres=# CREATE USER flask_api WITH PASSWORD 'flask_api';
+postgres=# CREATE DATABASE flask_api;
+postgres=# GRANT ALL PRIVILEGES ON DATABASE flask_api TO flask_api;
+postgres=# \q  # (quit)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+# run db migrations
+$ python manage.py db upgrade
 
-### Deployment
+# load db fixtures (optional)
+$ python manage.py db fixtures fixtures.json
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+# frontend dev server:
+$ npm install
+$ npm run start
 
-### `yarn build` fails to minify
+# backend dev server:
+$ python manage.py run
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# backend celery workers:
+$ python manage.py celery worker
+$ python manage.py celery beat
+```
+
+## Full Documentation
+
+Run `make docs` and browse to [http://localhost:5500](http://localhost:5500)
+
+Sources are in the `/docs` folder.
+
+FIXME: publish to GitHub Pages.
+
+## License
+
+MIT
