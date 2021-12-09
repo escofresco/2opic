@@ -1,3 +1,0 @@
----
-dkim_selector: default
-opendkim_opendkim_genkey_path: /usr/sbin/opendkim-genkey

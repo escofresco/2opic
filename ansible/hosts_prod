@@ -1,2 +1,0 @@
-[all]
-example.com app_env=prod app_domain=example.com app_subdomain=www run_fixtures=False
