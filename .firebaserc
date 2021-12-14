@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "opic-19248"
-  }
+    "default": "opic-19248",
+    "dev": "opic-19248",
+    "2opic": "opic-19248"
+  },
+  "targets": {}
 }
